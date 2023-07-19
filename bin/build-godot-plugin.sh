@@ -11,11 +11,10 @@ fi
 # TODO: check for software dependencies
 
 ## get the repos ##
-x=$(git clone git@github.com:RecBox-Games/godot-gamenite-controlpads.git)
+git clone git@github.com:RecBox-Games/godot-gamenite-controlpads.git
 git clone git@github.com:RecBox-Games/c_controlpads.git
 git clone git@github.com:RecBox-Games/ControlpadServer.git
 git clone git@github.com:RecBox-Games/ServerAccess.git
-set -e
 if [[ $2 != "--keep-branches" ]]; then
     # TODO: check current branches of checkouts
     cd godot-gamenite-controlpads; git branch main; git pull; cd ..
@@ -24,6 +23,7 @@ if [[ $2 != "--keep-branches" ]]; then
     cd ServerAccess; git branch main; git pull; cd ..
 fi
 
+set -e
 
 ## build things ##
 cd c_controlpads
@@ -32,10 +32,10 @@ cargo build --release
 rustup default stable
 # copy build product to
 if [[ $platform == "linux" ]]; then
-    cp target/release/libc_controlpads.a godot-gamenite-controlpads/recbox-bin/
+    cp target/release/libc_controlpads.a ../godot-gamenite-controlpads/recbox-bin/
 
 elif [[ $platform == "windows" ]]; then
-    cp target/release/c_controlpads.lib godot-gamenite-controlpads/recbox-bin/
+    cp target/release/c_controlpads.lib ../godot-gamenite-controlpads/recbox-bin/
 fi
 cd ../godot-gamenite-controlpads/
 if [[ ! -d "./godot-cpp/bin" ]]; then
