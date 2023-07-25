@@ -45,7 +45,7 @@ cargo build --release
 cp target/release/server ../controlpad_test_server/controlpad_server
 rustup target add x86_64-pc-windows-gnu
 cargo build --release --target x86_64-pc-windows-gnu
-cp target/release/server.exe ../controlpad_test_server/controlpad_server.exe
+cp target/x86_64-pc-windows-gnu/release/server.exe ../controlpad_test_server/controlpad_server.exe
 exit 0
 cd ..
 
