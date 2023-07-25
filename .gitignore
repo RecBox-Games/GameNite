@@ -2,4 +2,7 @@
 
 !README.md
 !gamenite
-!bin
+!bin/
+
+# nested levels
+!*/*
