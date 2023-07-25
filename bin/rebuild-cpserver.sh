@@ -1,34 +1,47 @@
 #!/bin/bash
 
-
-# TODO: check for software dependencies
-
-## get the repos ##
-git clone git@github.com:RecBox-Games/ServerAccess.git
-git clone git@github.com:RecBox-Games/ControlpadServer.git
-git clone git@github.com:RecBox-Games/c_controlpads.git
-git clone git@github.com:RecBox-Games/controlpad_test_server.git
-git clone git@github.com:RecBox-Games/c_sharp_controlpads.git
-git clone git@github.com:RecBox-Games/godot-gamenite-controlpads.git
-if [[ $2 != "--keep-branches" ]]; then
-    # TODO: check current branches of checkouts
-    cd ServerAccess; git branch main; git pull; cd ..
-    cd ControlpadServer; git branch main; git pull; cd ..
-    cd c_controlpads; git branch main; git pull; cd ..
-    cd controlpad_test_Server; git branch main; git pull; cd ..
-    cd c_sharp_controlpads; git branch main; git pull; cd ..
-    cd godot-gamenite-controlpads; git branch main; git pull; cd ..
-fi
-
 set -e
 
+
+function git_clone_and_checkout() {
+    local repo_name=$1
+    local branch=${2-main}
+    local original_dir=$(pwd)
+
+    if [[ -d "$repo_name" ]]; then
+        echo "Directory $repo_name exists. Not cloning."
+    else
+        git clone https://github.com/username/$repo_name.git
+    fi
+
+    cd "$repo_name"
+
+    local actual_branch=$(git rev-parse --abbrev-ref HEAD)
+    if [[ "$actual_branch" != "$branch" ]]; then
+	echo "$repo_name was not on $branch. Checking out $branch"
+        git checkout main
+    fi
+
+    cd "$original_dir"
+}
+
+
+## get the repos ##
+git_clone_and_checkout ServerAccess
+git_clone_and_checkout ControlpadServer
+git_clone_and_checkout c_controlpads
+git_clone_and_checkout controlpad_test_server
+git_clone_and_checkout c_sharp_controlpads
+git_clone_and_checkout godot-gamenite-controlpads
+
+
 ## ControlpadServer ##
-cd ControlpadsServer
+cd ControlpadServer
 cargo build --release
 cp target/release/server ../controlpad_test_server/controlpad_server
 rustup target add x86_64-pc-windows-gnu
 cargo build --release --target x86_64-pc-windows-gnu
-cp target/release/server ../controlpad_test_server/controlpad_server
+cp target/release/server.exe ../controlpad_test_server/controlpad_server.exe
 exit 0
 cd ..
 
