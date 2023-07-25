@@ -2,6 +2,10 @@
 
 set -e
 
+if [[ ! "$(./bin/os-name.sh)" =~ "Debian GNU/Linux 11 (bullseye)" ]]; then
+    echo "Must run this script on a build machine"
+    exit 0
+fi
 
 function git_clone_and_checkout() {
     local repo_name=$1
