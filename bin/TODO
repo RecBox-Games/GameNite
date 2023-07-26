@@ -1,0 +1,3 @@
+* dependencies -> ubuntu_dependencies
+* move git_clone_... to its own file
+* use git_clone_... in build_plugin_...
