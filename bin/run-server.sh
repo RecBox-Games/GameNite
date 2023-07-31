@@ -22,8 +22,9 @@ cargo run &
 cd ../WebCP
 git checkout main
 here=$(pwd)
-cd $1
+cd ../$1
 controller_dir=$(pwd)
 cd $here
+echo "ln -sfn $controller_dir /home/requin/controller"
 ln -sfn $controller_dir /home/requin/controller
 node index.js
