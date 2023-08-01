@@ -53,6 +53,9 @@ if [ $? -ne 0 ]; then
 fi
 scons platform=$platform target=template_release
 
+# copy libraries to the addons dir
+cp demo/bin/* addons/gamenite-controlpads/bin/
+
 ## Testing ##
 # prompt if the user wants to test
 read -p "Do you want to test the plugin (y/n)? " response
