@@ -1,28 +1,52 @@
 #!/bin/bash
 
-sudo apt update
+echo '/// Installing Packages \\\'
+
+# update and upgrade
+if [[ "$1" != "--no-upgrade" ]]; then
+    echo '====== Updating Upgrading ======'
+    sudo apt update
+    sudo apt upgrade
+    echo '================================'    
+fi
+
+# helpful function to install without wasting time if already installed
+install() {
+    if ! dpkg -l $1 2>/dev/null | grep . -q; then
+	if ! apt-cache search $1 | grep . -q; then
+	    echo "!!! $1 package not found !!!"	>&2
+	else
+	    echo ">>> Installing $1 <<<"
+	    sudo apt install -y $1
+	fi
+    else
+	echo "||| $1 is installed |||"
+    fi
+}
 
 # c linker and build tools
-if ! command -v curl &> /dev/null; then
-    sudo apt install build-essential
-fi
+install build-essential
 
 # cross compiler to windows
-if ! command -v x86_64-w64-mingw32-gcc &> /dev/null; then
-    sudo apt install mingw-w64
-fi
+install mingw-w64
 
 # curl
-if ! command -v curl &> /dev/null; then
-    sudo apt install curl
-fi
+install curl
 
 # Rust
 if ! command -v cargo &> /dev/null; then
+    echo ">>> Installing rustup <<<"    
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+else
+    echo "||| rustup is installed |||" 
 fi
 
 # node
-if ! command -v npm &> /dev/null; then
-    sudo apt install nodejs
-fi
+install nodejs
+
+# SystemApps dependencies
+install librust-alsa-sys-dev
+install librust-libudev-sys-dev
+
+
+echo '\\\ Done ///'
