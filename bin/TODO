@@ -1,3 +1,7 @@
 * dependencies -> ubuntu_dependencies
 * move git_clone_... to its own file
 * use git_clone_... in build_plugin_...
+
+* we need a script that tests all outstanding changes (aka it doesn't use
+  anything from rqn, just the latest commit on main branches of SystemApps,
+  rqn-builder, etc. )
