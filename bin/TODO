@@ -1,3 +1,12 @@
 * dependencies -> ubuntu_dependencies
 * move git_clone_... to its own file
 * use git_clone_... in build_plugin_...
+
+* we need a script that tests all outstanding changes (aka it doesn't use
+  anything from rqn, just the latest commit on main branches of SystemApps,
+  rqn-builder, etc. )
+
+* need a command to see a diff between this set of checkouts and patch number N
+  and similar commands like diff between patches N and M or list of commits
+  between patches N and M
+  

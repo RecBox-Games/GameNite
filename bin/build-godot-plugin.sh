@@ -71,7 +71,6 @@ elif [[ $platform == "windows" ]]; then
     cp demo/bin/*.dll addons/gamenite-controlpads/bin/
 fi
 
-
 ## Testing ##
 # prompt if the user wants to test
 read -p "Do you want to test the plugin (y/n)? " response
