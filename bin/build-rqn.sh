@@ -23,17 +23,19 @@ repo_commit_string() {
     #
     echo "$repo_name $branch $commit"
 }
+
 git_clone_and_checkout() {
     set -e
     repo_name=$1
     branch=${2-main}
     original_dir=$(pwd)
     if [[ -d "$repo_name" ]]; then
-        echo "Directory $repo_name exists. Not cloning."
+        echo "Directory $repo_name exists."
     else
         git clone git@github.com:RecBox-Games/$repo_name.git
     fi
     cd "$repo_name"
+    git config pull.rebase false
     git fetch
     actual_branch=$(git rev-parse --abbrev-ref HEAD)
     if [[ "$actual_branch" != "$branch" ]]; then
@@ -67,3 +69,10 @@ echo "$(repo_commit_string SystemApps)" >> rqn/.commits
 
 ## build rqn ##
 $BIN_DIR/core-build-rqn.sh
+
+## increment the d number for version ##
+cd rqn
+git checkout version
+d_number=$(cat version | sed 's/.*d//')
+d_plus=$((d_number + 1))
+sed -i "s/d${d_number}/d${d_plus}/" version
