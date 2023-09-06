@@ -10,8 +10,6 @@ if [[ ! $2 == "--force-os" ]]; then
 	echo "Must run this script on a build machine"
 	exit 0
     fi
-else
-
 fi
 
 ## helper functions ##
@@ -42,6 +40,7 @@ git_clone_and_checkout() {
 	echo "$repo_name was not on $branch. Checking out $branch"
         git checkout $branch
     fi
+    git pull
     cd "$original_dir"
 }
 
@@ -67,4 +66,4 @@ echo "$(repo_commit_string WebCP)" >> rqn/.commits
 echo "$(repo_commit_string SystemApps)" >> rqn/.commits
 
 ## build rqn ##
-$BIN_DIR/core_build_rqn.sh
+$BIN_DIR/core-build-rqn.sh
