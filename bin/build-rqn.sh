@@ -46,6 +46,29 @@ git_clone_and_checkout() {
     cd "$original_dir"
 }
 
+set_new_version() {
+    cd rqn
+    # get testing version (last patch number)
+    git checkout testing -- version >/dev/null
+    last_patch=$(cat version)
+    echo "last patch: $last_patch"
+    git reset version >/dev/null
+    git checkout version >/dev/null
+    # check if we need to update pre-d version
+    flat_patch=$(echo $last_patch | sed 's/\.//g')
+    flat_version=$(cat version | sed 's/d.*//')
+    if [[ $flat_patch != $flat_version ]]; then
+        echo "${flat_patch}d0" > version
+    else
+        d_number=$(cat version | sed 's/.*d//')
+        d_plus=$((d_number + 1))
+        echo "${flat_version}d${d_plus}" > version
+    fi
+    echo "!!! set_new_version() is untested for new *d0 versions so remove this once it's tested !!!"
+    cd ..
+}
+
+## take note of testing version (last patch number) ##
 
 ## get the repos ##
 git_clone_and_checkout rqn ${1-development}
@@ -71,14 +94,10 @@ echo "$(repo_commit_string SystemApps)" >> rqn/.commits
 $BIN_DIR/core-build-rqn.sh
 
 ## increment the d number for version ##
-cd rqn
-git reset version >/dev/null
-git checkout version >/dev/null
-d_number=$(cat version | sed 's/.*d//')
-d_plus=$((d_number + 1))
-sed -i "s/d${d_number}/d${d_plus}/" version
+set_new_version
 
 ## end message ##
+cd rqn
 echo "-----------------------------"
 echo ""
 echo "You have finished building rqn version $(cat version):"
