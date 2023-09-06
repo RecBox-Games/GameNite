@@ -48,5 +48,7 @@ install nodejs
 install librust-alsa-sys-dev
 install librust-libudev-sys-dev
 
+# flamegraph
+install linux-tools-common
 
 echo '\\\ Done ///'

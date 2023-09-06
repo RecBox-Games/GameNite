@@ -8,6 +8,16 @@ if [[ "$platform" != "linux" && "$platform" != "windows" ]]; then
     exit 1
 fi
 
+# check that godot command exists
+function check_for_godot {
+    command -v godot
+    if [ $? -ne 0 ]; then
+        echo "No command named godot in your path. rename you Godot executable to"
+        echo "godot and put it in your path"
+        exit 3
+    fi
+}
+
 # TODO: check for software dependencies
 
 ## get the repos ##
@@ -41,6 +51,7 @@ cd ../godot-gamenite-controlpads/
 if [[ ! -d "./godot-cpp/bin" ]]; then
     cd godot-cpp
     git submodule update --init
+    check_for_godot
     godot --dump-extension-api extension_api.json
     scons platform=$platform -j4 custom_api_file=extension_api.json
     cd ..
@@ -53,8 +64,12 @@ if [ $? -ne 0 ]; then
 fi
 scons platform=$platform target=template_release
 
-# copy libraries to the addons dir
-cp demo/bin/* addons/gamenite-controlpads/bin/
+# copy newly created libraries into the addons directory
+if [[ $platform == "linux" ]]; then
+    cp demo/bin/*.so addons/gamenite-controlpads/bin/
+elif [[ $platform == "windows" ]]; then
+    cp demo/bin/*.dll addons/gamenite-controlpads/bin/
+fi
 
 ## Testing ##
 # prompt if the user wants to test
@@ -63,13 +78,8 @@ if [[ "$response" != "y" ]]; then
     echo "Done."
     exit 0
 fi
-# check that godot command exists
-command -v godot
-if [ $? -ne 0 ]; then
-    echo "No command named godot in your path. rename you Godot executable to"
-    echo "godot and put it in your path"
-    exit 3
-fi
 
+check_for_godot
+echo "testing not yet implemented"
 
 # TODO: prompt the user to commit c_controlpads library to plugin repo

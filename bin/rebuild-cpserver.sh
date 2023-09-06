@@ -15,7 +15,7 @@ function git_clone_and_checkout() {
     if [[ -d "$repo_name" ]]; then
         echo "Directory $repo_name exists. Not cloning."
     else
-        git clone https://github.com/username/$repo_name.git
+        git clone git@github.com:RecBox-Games/$repo_name.git
     fi
 
     cd "$repo_name"
@@ -23,7 +23,7 @@ function git_clone_and_checkout() {
     local actual_branch=$(git rev-parse --abbrev-ref HEAD)
     if [[ "$actual_branch" != "$branch" ]]; then
 	echo "$repo_name was not on $branch. Checking out $branch"
-        git checkout main
+        git checkout $branch
     fi
 
     cd "$original_dir"
