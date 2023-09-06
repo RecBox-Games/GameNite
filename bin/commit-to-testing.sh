@@ -14,6 +14,7 @@ prompt_user() {
 }
 
 cd rqn
+echo "checking out development"
 git checkout development
 dev_v=$(cat version)
 git checkout testing
@@ -41,6 +42,8 @@ prompt_user "Are you sure $new_test_v is correct?"
 
 # now that we've confirmed new version number, do the merge
 echo "merging development to testing branch"
-git merge development
+git merge development --no-commit
 echo "$new_test_v" > version
 cat version
+git add version
+git commit -m "release:testing:$new_test_v"
