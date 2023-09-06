@@ -10,6 +10,8 @@ if [[ ! $2 == "--force-os" ]]; then
 	echo "Must run this script on a build machine"
 	exit 0
     fi
+else
+
 fi
 
 ## helper functions ##
@@ -18,9 +20,10 @@ repo_commit_string() {
     #
     cd $repo_name
     commit=$(git rev-parse --short HEAD)
+    branch=$(git rev-parse --abbrev-ref HEAD)
     cd ..
     #
-    echo "$repo_name $commit"
+    echo "$repo_name $branch $commit"
 }
 git_clone_and_checkout() {
     set -e
@@ -51,12 +54,17 @@ git_clone_and_checkout ControlpadServer
 git_clone_and_checkout WebCP
 git_clone_and_checkout SystemApps
 
-## add commit hashes to rqn/commits ##
-echo "$(repo_commit_string rqn-scripts)" > rqn/commits
-echo "$(repo_commit_string ServerAccess)" >> rqn/commits
-echo "$(repo_commit_string ControlpadServer)" >> rqn/commits
-echo "$(repo_commit_string WebCP)" >> rqn/commits
-echo "$(repo_commit_string SystemApps)" >> rqn/commits
+## add a warning artifact if we built from the wrong OS
+if [[ $2 == "--force-os" ]]; then
+    touch rqn/BUILT-FROM-THE-WRONG-OS
+fi
+
+## add commit hashes to rqn/.commits ##
+echo "$(repo_commit_string rqn-scripts)" > rqn/.commits
+echo "$(repo_commit_string ServerAccess)" >> rqn/.commits
+echo "$(repo_commit_string ControlpadServer)" >> rqn/.commits
+echo "$(repo_commit_string WebCP)" >> rqn/.commits
+echo "$(repo_commit_string SystemApps)" >> rqn/.commits
 
 ## build rqn ##
 $BIN_DIR/core_build_rqn.sh
