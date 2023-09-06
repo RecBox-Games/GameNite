@@ -22,7 +22,7 @@ cd $base
 
 # Control Pad Server
 echo "----- ControlPadSever -----"
-cd ControlPadServer
+cd ControlpadServer
 cargo build --release
 cp target/release/server $dest/cp_server
 cd ..

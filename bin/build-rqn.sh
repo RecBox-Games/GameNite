@@ -23,6 +23,7 @@ repo_commit_string() {
     echo "$repo_name $commit"
 }
 git_clone_and_checkout() {
+    set -e
     repo_name=$1
     branch=${2-main}
     original_dir=$(pwd)
@@ -32,6 +33,7 @@ git_clone_and_checkout() {
         git clone git@github.com:RecBox-Games/$repo_name.git
     fi
     cd "$repo_name"
+    git fetch
     actual_branch=$(git rev-parse --abbrev-ref HEAD)
     if [[ "$actual_branch" != "$branch" ]]; then
 	echo "$repo_name was not on $branch. Checking out $branch"
@@ -49,12 +51,12 @@ git_clone_and_checkout ControlpadServer
 git_clone_and_checkout WebCP
 git_clone_and_checkout SystemApps
 
-## add commit hashes to rqn/.commit ##
-echo "$(repo_commit_string rqn-scripts)" > rqn/.commit
-echo "$(repo_commit_string ServerAccess)" >> rqn/.commit
-echo "$(repo_commit_string ControlpadServer)" >> rqn/.commit
-echo "$(repo_commit_string WebCP)" >> rqn/.commit
-echo "$(repo_commit_string SystemApps)" >> rqn/.commit
+## add commit hashes to rqn/commits ##
+echo "$(repo_commit_string rqn-scripts)" > rqn/commits
+echo "$(repo_commit_string ServerAccess)" >> rqn/commits
+echo "$(repo_commit_string ControlpadServer)" >> rqn/commits
+echo "$(repo_commit_string WebCP)" >> rqn/commits
+echo "$(repo_commit_string SystemApps)" >> rqn/commits
 
 ## build rqn ##
 $BIN_DIR/core_build_rqn.sh
