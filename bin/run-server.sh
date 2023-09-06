@@ -15,6 +15,7 @@ function kill_process_by_name() {
 }
 
 kill_process_by_name "target/.*/server"
+kill_process_by_name "cp_server"
 kill_process_by_name "index.js"
 
 cd ControlpadServer
