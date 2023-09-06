@@ -30,7 +30,7 @@ git_clone_and_checkout() {
     branch=${2-main}
     original_dir=$(pwd)
     if [[ -d "$repo_name" ]]; then
-        echo "Directory $repo_name exists."
+        echo "$repo_name exists"
     else
         git clone git@github.com:RecBox-Games/$repo_name.git
     fi
@@ -72,7 +72,17 @@ $BIN_DIR/core-build-rqn.sh
 
 ## increment the d number for version ##
 cd rqn
-git checkout version
+git reset version >/dev/null
+git checkout version >/dev/null
 d_number=$(cat version | sed 's/.*d//')
 d_plus=$((d_number + 1))
 sed -i "s/d${d_number}/d${d_plus}/" version
+
+## end message ##
+echo "-----------------------------"
+echo ""
+echo "You have finished building rqn version $(cat version):"
+git -c color.status=always status | grep ":\|\[m" | sed 's/\(.*\)/| \1/'
+echo "-----------------------------"
+echo ""
+echo "Please review changed files then go into rqn and git add/commit"
