@@ -2,11 +2,14 @@
 
 set -e
 
-BIN_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+BIN_DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+base="$(cd $BIN_DIR/.. && pwd)"
+
+cd $base
 
 ## check that we're building from the right machine ##
 if [[ ! $2 == "--force-os" ]]; then
-    if [[ ! "$(./bin/os-name.sh)" =~ "Debian GNU/Linux 11 (bullseye)" ]]; then
+    if [[ ! "$($BIN_DIR/os-name.sh)" =~ "Debian GNU/Linux 11 (bullseye)" ]]; then
 	echo "Must run this script on a build machine"
 	exit 0
     fi
@@ -14,12 +17,15 @@ fi
 
 ## helper functions ##
 repo_commit_string() {
+    start_dir=$(pwd)
     repo_name=$1
     #
-    cd $repo_name
+    if [[ "$repo_name" != "GameNite" ]]; then
+        cd $repo_name
+    fi
     commit=$(git rev-parse --short HEAD)
     branch=$(git rev-parse --abbrev-ref HEAD)
-    cd ..
+    cd "$start_dir"
     #
     echo "$repo_name $branch $commit"
 }
@@ -58,19 +64,25 @@ set_new_version() {
     flat_patch=$(echo $last_patch | sed 's/\.//g')
     flat_version=$(cat version | sed 's/d.*//')
     if [[ $flat_patch != $flat_version ]]; then
-        echo "${flat_patch}d0" > version
+        echo "${flat_patch}d1" > version
     else
         d_number=$(cat version | sed 's/.*d//')
         d_plus=$((d_number + 1))
         echo "${flat_version}d${d_plus}" > version
     fi
-    echo "!!! set_new_version() is untested for new *d0 versions so remove this once it's tested !!!"
     cd ..
 }
 
 ## take note of testing version (last patch number) ##
 
+## make sure no outstanding changes in GameNite ##
+if [[ -n "$(git status | grep modified)" ]]; then
+    echo "There are outstanding changes in GameNite repo. Exiting."
+    exit
+fi
+
 ## get the repos ##
+git_clone_and_checkout .
 git_clone_and_checkout rqn ${1-development}
 git_clone_and_checkout rqn-scripts
 git_clone_and_checkout ServerAccess
@@ -84,7 +96,8 @@ if [[ $2 == "--force-os" ]]; then
 fi
 
 ## add commit hashes to rqn/.commits ##
-echo "$(repo_commit_string rqn-scripts)" > rqn/.commits
+echo "$(repo_commit_string ./)" > rqn/.commits
+echo "$(repo_commit_string rqn-scripts)" >> rqn/.commits
 echo "$(repo_commit_string ServerAccess)" >> rqn/.commits
 echo "$(repo_commit_string ControlpadServer)" >> rqn/.commits
 echo "$(repo_commit_string WebCP)" >> rqn/.commits
