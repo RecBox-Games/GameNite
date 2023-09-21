@@ -34,13 +34,15 @@ git_clone_and_checkout() {
     set -e
     repo_name=$1
     branch=${2-main}
-    original_dir=$(pwd)
-    if [[ -d "$repo_name" ]]; then
-        echo "$repo_name exists"
-    else
-        git clone git@github.com:RecBox-Games/$repo_name.git
+    start_dir=$(pwd)
+    if [[ "$repo_name" != "GameNite" ]]; then
+        if [[ -d "$repo_name" ]]; then
+            echo "$repo_name exists"
+        else
+            git clone git@github.com:RecBox-Games/$repo_name.git
+        fi
+        cd "$repo_name"
     fi
-    cd "$repo_name"
     git config pull.rebase false
     git fetch
     actual_branch=$(git rev-parse --abbrev-ref HEAD)
@@ -49,7 +51,7 @@ git_clone_and_checkout() {
         git checkout $branch
     fi
     git pull
-    cd "$original_dir"
+    cd "$start_dir"
 }
 
 set_new_version() {
@@ -96,7 +98,7 @@ if [[ $2 == "--force-os" ]]; then
 fi
 
 ## add commit hashes to rqn/.commits ##
-echo "$(repo_commit_string ./)" > rqn/.commits
+echo "$(repo_commit_string GameNite)" > rqn/.commits
 echo "$(repo_commit_string rqn-scripts)" >> rqn/.commits
 echo "$(repo_commit_string ServerAccess)" >> rqn/.commits
 echo "$(repo_commit_string ControlpadServer)" >> rqn/.commits
