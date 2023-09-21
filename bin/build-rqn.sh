@@ -82,7 +82,7 @@ if [[ -n "$(git status | grep modified)" ]]; then
 fi
 
 ## get the repos ##
-git_clone_and_checkout .
+git_clone_and_checkout GameNite
 git_clone_and_checkout rqn ${1-development}
 git_clone_and_checkout rqn-scripts
 git_clone_and_checkout ServerAccess
