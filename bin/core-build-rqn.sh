@@ -39,7 +39,7 @@ cd ..
 echo "----- SystemApps -----"
 cd SystemApps
 cargo build --release
-mkdir -p $dest/controller
+mkdir -p $dest/controller # remove this line if it's not necessary 
 cp -r controller/controller $dest/
 cp target/release/loader $dest/
 cp target/release/system $dest/
