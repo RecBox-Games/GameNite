@@ -135,5 +135,12 @@ for file in $files; do
 done
 echo "-----------------------------"
 git status
-git commit -m "release:development:$(echo version)"
+read -p "Do you want to commit? [y/n] " answer
+if [[ "$answer" != "y" ]]; then
+    echo "Quitting. You should probably reset local rqn changes."
+    exit
+fi
+echo "commit header: \"release:development:$(cat version)\""
+read -p "Type a helper message for the commit (or just hit ENTER): " answer
+git commit -m "release:development:$(cat version)"
 git push

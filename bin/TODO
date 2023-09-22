@@ -9,4 +9,5 @@
 * need a command to see a diff between this set of checkouts and patch number N
   and similar commands like diff between patches N and M or list of commits
   between patches N and M
-  
+
+* check for outstanding changes in source repos
