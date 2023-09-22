@@ -8,7 +8,7 @@ base="$(cd $BIN_DIR/.. && pwd)"
 cd $base
 
 ## check that we're building from the right machine ##
-if [[ ! $2 == "--force-os" ]]; then
+if [[ ! $1 == "--force-os" ]]; then
     if [[ ! "$($BIN_DIR/os-name.sh)" =~ "Debian GNU/Linux 11 (bullseye)" ]]; then
 	echo "Must run this script on a build machine"
 	exit 0
@@ -75,8 +75,6 @@ set_new_version() {
     cd ..
 }
 
-## take note of testing version (last patch number) ##
-
 ## make sure no outstanding changes in GameNite ##
 if [[ -n "$(git status | grep modified)" ]]; then
     echo "There are outstanding changes in GameNite repo. Exiting."
@@ -111,7 +109,7 @@ $BIN_DIR/core-build-rqn.sh
 ## increment the d number for version ##
 set_new_version
 
-## end message ##
+## build end message ##
 cd rqn
 echo "-----------------------------"
 echo ""
@@ -119,4 +117,23 @@ echo "You have finished building rqn version $(cat version):"
 git -c color.status=always status | grep ":\|\[m" | sed 's/\(.*\)/| \1/'
 echo "-----------------------------"
 echo ""
-echo "Please review changed files then go into rqn and git add/commit"
+
+## committing ##
+files=$(git status --porcelain | awk '{if ($1 == "M" || $1 == "??" || $1 == "A") print $2}')
+# Loop through files and ask user
+for file in $files; do
+    read -p "Do you want to add $file? [y/n] " answer
+    case $answer in
+        [Yy]* )
+            git add "$file"
+            echo "$file added."
+            ;;
+        * )
+            echo "$file skipped."
+            ;;
+    esac
+done
+echo "-----------------------------"
+git status
+git commit -m "release:development:$(echo version)"
+git push
