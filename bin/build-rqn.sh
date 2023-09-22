@@ -8,7 +8,7 @@ base="$(cd $BIN_DIR/.. && pwd)"
 cd $base
 
 ## check that we're building from the right machine ##
-if [[ ! $1 == "--force-os" ]]; then
+if [[ ! $2 == "--force-os" ]]; then
     if [[ ! "$($BIN_DIR/os-name.sh)" =~ "Debian GNU/Linux 11 (bullseye)" ]]; then
 	echo "Must run this script on a build machine"
 	exit 0
@@ -83,14 +83,51 @@ fi
 
 ## get the repos ##
 git_clone_and_checkout GameNite
-git_clone_and_checkout rqn development
+git_clone_and_checkout rqn $1
 git_clone_and_checkout rqn-scripts
 git_clone_and_checkout ServerAccess
 git_clone_and_checkout ControlpadServer
 git_clone_and_checkout WebCP
 git_clone_and_checkout SystemApps
+# TODO: separate out the above into it's own script with an option to use non-main branches
+# msg eg: "this repo is on branch ... . checkout main?
+# also checking for outstanding changes
 
-## add a warning artifact if we built from the wrong OS
+## check that there is a correct branch specified ##
+if [[ -z "$1" ]]; then
+    echo "You have not specified a branch."
+    echo "Specify a branch, probably your personal branch or development."
+    echo "Exiting."
+    exit
+fi
+if [[ "$1" == "testing" || "$1" == "production" ]]; then
+    echo "This script cannot be used to affect testing or production."
+    echo "Build on a different branch, then use commit-to-testing.sh"
+    echo "Exiting."
+    exit
+fi
+if [[ "$1" == "development" ]]; then
+    echo -n "You've specified the development branch. Committing broken code to "
+    echo "this branch will cause problem for others."
+    read -p "Continue? [y/n] " answer
+    if [[ $answer != [Yy] ]]; then
+        echo "Exiting."
+        exit
+    fi
+fi
+cd rqn
+if ! git show-ref --heads --quiet "$1"; then # check local branches
+    if ! git ls-remote --quiet --heads origin "$branch_name"; then # check remote branches
+        read -p "Branch $1 does not exist. Do you want to create it? [y/n] " answer
+        if [[ $answer == [Yy]* ]]; then
+            git checkout -b "$branch_name"
+        fi
+    fi
+fi
+cd ..
+
+
+## add a warning artifact if we built from the wrong OS ##
 if [[ $2 == "--force-os" ]]; then
     touch rqn/BUILT-FROM-THE-WRONG-OS
 fi
