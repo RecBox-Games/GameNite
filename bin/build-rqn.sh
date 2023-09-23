@@ -148,7 +148,7 @@ git fetch
 git reset --hard HEAD
 # check that the specified branch exists
 if ! git show-ref --heads --quiet "$rqn_branch"; then # check local branches
-    if ! git ls-remote --quiet --heads origin "$branch_name"; then # check remote branches
+    if [[ -z $(git ls-remote --heads origin "$branch_name") ]]; then # check remote branches
         read -p "Branch $rqn_branch does not exist. Do you want to create it? [y/n] " answer
         if [[ $answer == [Yy]* ]]; then
             git checkout -b "$branch_name"
