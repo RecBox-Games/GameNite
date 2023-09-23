@@ -22,7 +22,7 @@ if [[ "$1" == "testing" || "$1" == "production" ]]; then
 fi
 if [[ "$1" == "development" ]]; then
     echo -n "You've specified the development branch. Committing broken code to "
-    echo "this branch will cause problem for others."
+    echo "this branch will cause problems for others."
     read -p "Continue? [y/n] " answer
     if [[ $answer != [Yy] ]]; then
         echo "Exiting."
@@ -115,9 +115,7 @@ if [[ "$(git rev-parse HEAD)" != "$(git rev-parse @{u})" ]]; then
 fi
 
 
-
 ## get the repos ##
-git_clone_and_checkout GameNite
 git_clone_and_checkout rqn $1
 git_clone_and_checkout rqn-scripts
 git_clone_and_checkout ServerAccess
