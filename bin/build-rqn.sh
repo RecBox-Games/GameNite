@@ -109,7 +109,7 @@ fi
 git fetch
 if [[ "$(git rev-parse HEAD)" != "$(git rev-parse @{u})" ]]; then
     echo "Your branch does not match origin. Pulling and Pushing..."
-    git_clone_and_checkout GameNite
+    git_clone_and_checkout GameNite saf
     git push
     exit
 fi
@@ -119,9 +119,9 @@ fi
 git_clone_and_checkout rqn $1
 git_clone_and_checkout rqn-scripts
 git_clone_and_checkout ServerAccess
-git_clone_and_checkout ControlpadServer
+git_clone_and_checkout ControlpadServer saf
 git_clone_and_checkout WebCP
-git_clone_and_checkout SystemApps
+git_clone_and_checkout SystemApps saf
 # TODO: separate out the above into it's own script with an option to use
 # non-main branches
 # msg eg: "this repo is on branch ... . checkout main?
