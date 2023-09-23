@@ -7,15 +7,6 @@ base="$(cd $BIN_DIR/.. && pwd)"
 cd $base
 
 
-## check that we're building from the right machine ##
-if [[ ! $2 == "--force-os" ]]; then
-    if [[ ! "$($BIN_DIR/os-name.sh)" =~ "Debian GNU/Linux 11 (bullseye)" ]]; then
-	echo "Must run this script on a build machine"
-	exit 0
-    fi
-fi
-
-
 ## check that there is a correct branch specified ##
 if [[ -z "$1" ]]; then
     echo "You have not specified a branch."
@@ -25,7 +16,7 @@ if [[ -z "$1" ]]; then
 fi
 if [[ "$1" == "testing" || "$1" == "production" ]]; then
     echo "This script cannot be used to affect testing or production."
-    echo "Build on a different branch, then use commit-to-testing.sh"
+    echo "Build for a different branch, then use commit-to-testing.sh"
     echo "Exiting."
     exit
 fi
@@ -36,6 +27,15 @@ if [[ "$1" == "development" ]]; then
     if [[ $answer != [Yy] ]]; then
         echo "Exiting."
         exit
+    fi
+fi
+
+
+## check that we're building from the right machine ##
+if [[ ! $2 == "--force-os" ]]; then
+    if [[ ! "$($BIN_DIR/os-name.sh)" =~ "Debian GNU/Linux 11 (bullseye)" ]]; then
+	echo "Must run this script on a build machine"
+	exit 0
     fi
 fi
 
