@@ -236,7 +236,7 @@ if [[ "$answer" != "y" ]]; then
     echo "Quitting. You should probably reset local rqn changes."
     exit
 fi
-echo "commit header: \"release:development:$(cat version)\""
+echo "commit header: \"release:$branch_name:$(cat version)\""
 read -p "Type a helper message for the commit (or just hit ENTER): " answer
 git commit -m "release:development:$(cat version) | $answer"
 git push
