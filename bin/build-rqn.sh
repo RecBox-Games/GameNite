@@ -143,12 +143,6 @@ fi
 cd ..
 
 
-## add a warning artifact if we built from the wrong OS ##
-if [[ $2 == "--force-os" ]]; then
-    touch rqn/BUILT-FROM-THE-WRONG-OS
-fi
-
-
 ## add commit hashes to rqn/.commits ##
 echo "$(repo_commit_string GameNite)" > rqn/.commits
 echo "$(repo_commit_string rqn-scripts)" >> rqn/.commits
@@ -160,6 +154,12 @@ echo "$(repo_commit_string SystemApps)" >> rqn/.commits
 
 ## build rqn ##
 $BIN_DIR/core-build-rqn.sh
+
+
+## add a warning artifact if we built from the wrong OS ##
+if [[ $2 == "--force-os" ]]; then
+    touch rqn/BUILT-FROM-THE-WRONG-OS
+fi
 
 
 ## increment the d number for version ##
