@@ -101,11 +101,18 @@ set_new_version() {
 }
 
 
-## make sure no outstanding changes in GameNite ##
+## make sure GameNite is up to date with no outstanding changes ##
 if [[ -n "$(git status | grep modified)" ]]; then
     echo "There are outstanding changes in GameNite repo. Exiting."
     exit
 fi
+git fetch
+if [[ "$(git rev-parse HEAD)" != "$(git rev-parse @{u})" ]]; then
+    echo "Your branch is not up-to-date with origin."
+    git_clone_and_checkout GameNite
+    exit
+fi
+
 
 
 ## get the repos ##
@@ -116,7 +123,8 @@ git_clone_and_checkout ServerAccess
 git_clone_and_checkout ControlpadServer
 git_clone_and_checkout WebCP
 git_clone_and_checkout SystemApps
-# TODO: separate out the above into it's own script with an option to use non-main branches
+# TODO: separate out the above into it's own script with an option to use
+# non-main branches
 # msg eg: "this repo is on branch ... . checkout main?
 # also checking for outstanding changes
 
