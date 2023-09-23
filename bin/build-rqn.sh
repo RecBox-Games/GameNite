@@ -82,7 +82,7 @@ git_clone_and_checkout() {
 set_new_version() {
     cd rqn
     # get testing version (last patch number)
-    git checkout testing -- version >/dev/null
+    git checkout origin/testing -- version >/dev/null
     last_patch=$(cat version)
     echo "last patch: $last_patch"
     git reset version >/dev/null
