@@ -39,6 +39,7 @@ cd ..
 echo "----- SystemApps -----"
 cd SystemApps
 cargo build --release
+cd controller/controller_lib
 echo "compiling TypeScript controller code to JavaScript..."
 tsc
 echo "successfully compiled TypeScript controller code to JavaScript..."
