@@ -1,5 +1,8 @@
 #!/bin/bash
 
+BIN_DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+
 echo '/// Installing Packages \\\'
 
 # update and upgrade
@@ -43,6 +46,18 @@ fi
 
 # node
 install nodejs
+
+# nvm
+source $BIN_DIR/helper/nvm-load.sh
+if ! command -v nvm &> /dev/null; then
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+fi
+CURRENT_NODE_VERSION=$(node -v | cut -d '.' -f 1 | tr -d 'v')
+if [ "$CURRENT_NODE_VERSION" -ne 18 ]; then
+    echo "Upgrading to Node.js v18..."
+    nvm install 18
+    nvm use 18
+fi
 
 # tsc
 install node-typescript

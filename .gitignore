@@ -3,9 +3,8 @@
 !README.md
 !gamenite
 !bin/
+!bin/**
 !diffs/
 
-# nested levels
-!*/*
 
 *~
