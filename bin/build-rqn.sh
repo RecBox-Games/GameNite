@@ -66,7 +66,7 @@ git_clone_and_checkout() {
     cd $repo_path
     repo_name=$(basename $(git rev-parse --show-toplevel))
     branch_name=$(git rev-parse --abbrev-ref HEAD)
-    echo "--- $repo_name($branch_name) ---"
+    echo -e "\033[0;34m--- $repo_name($branch_name) ---\033[0m"
     if [[ -n "$(git status --porcelain)" ]]; then
         echo "There are outstanding changes in $repo_name repo. Fix that then try again."
         echo "Exiting."
