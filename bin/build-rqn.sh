@@ -108,8 +108,9 @@ if [[ -n "$(git status | grep modified)" ]]; then
 fi
 git fetch
 if [[ "$(git rev-parse HEAD)" != "$(git rev-parse @{u})" ]]; then
-    echo "Your branch is not up-to-date with origin."
+    echo "Your branch does not match origin. Pulling and Pushing..."
     git_clone_and_checkout GameNite
+    git push
     exit
 fi
 
@@ -176,7 +177,7 @@ echo ""
 
 
 ## committing ##
-files=$(git status --porcelain | awk '{if ($1 == "M" || $1 == "D" || $1 == "??" || $1 == "A") print $2}')
+files=$(git status --porcelain | grep ".[MAD?]" | sed 's/^...//')
 # Loop through files and ask user
 asnwer=""
 for file in $files; do
