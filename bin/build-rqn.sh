@@ -122,6 +122,14 @@ set_new_version() {
 ## start message ##
 this_branch=$(git rev-parse --abbrev-ref HEAD)
 echo -e "\033[0;34mYou are building the $rqn_branch branch of rqn from the $this_branch branch of GameNite\033[0m"
+if [[ "$this_branch" != "main" ]]; then
+    echo "You should probably be on the main branch of GameNite."
+    read -p "Continue anyway? [y/n]" answer
+    if [[ $answer != [Yy]* ]]; then
+        echo "Exiting."
+        exit
+    fi
+fi
 
 
 ## get the repos ##
