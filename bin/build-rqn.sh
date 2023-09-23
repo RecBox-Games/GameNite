@@ -59,9 +59,8 @@ git_clone_and_checkout() {
     set -e
     start_dir=$(pwd)
     repo_path=$1
-    if [[ -d "$repo_path" ]]; then
-        echo "$repo_name exists"
-    else
+    if [[ ! -d "$repo_path" ]]; then
+        echo "$repo_path does not yet exist"
         git clone git@github.com:RecBox-Games/$repo_path.git
     fi
     cd $repo_path
@@ -119,26 +118,13 @@ set_new_version() {
 }
 
 
-## make sure GameNite is up to date with no outstanding changes ##
-if [[ -n "$(git status | grep modified)" ]]; then
-    echo "There are outstanding changes in GameNite repo. Exiting."
-    exit
-fi
-git fetch
-if [[ "$(git rev-parse HEAD)" != "$(git rev-parse @{u})" ]]; then
-    echo "Your branch does not match origin. Pulling and Pushing..."
-    git_clone_and_checkout GameNite
-    git push
-    exit
-fi
-
-
 ## start message ##
 this_branch=$(git rev-parse --abbrev-ref HEAD)
 echo "You are building the $rqn_branch branch of rqn from the $this_branch branch of GameNite"
 
+
 ## get the repos ##
-git_clone_and_checkout rqn $rqn_branch
+git_clone_and_checkout .
 git_clone_and_checkout rqn-scripts
 git_clone_and_checkout ServerAccess
 git_clone_and_checkout ControlpadServer
@@ -150,15 +136,30 @@ git_clone_and_checkout SystemApps
 # also checking for outstanding changes
 
 
-## check that the specified branch exists
+## configure rqn branch ##
+if [[ ! -d "rqn" ]]; then
+    echo "rqn does not yet exist"
+    git clone git@github.com:RecBox-Games/rqn.git
+fi
 cd rqn
+git fetch
+# clear any local bullshit
+git reset --hard HEAD
+# check that the specified branch exists
 if ! git show-ref --heads --quiet "$rqn_branch"; then # check local branches
     if ! git ls-remote --quiet --heads origin "$branch_name"; then # check remote branches
         read -p "Branch $rqn_branch does not exist. Do you want to create it? [y/n] " answer
         if [[ $answer == [Yy]* ]]; then
             git checkout -b "$branch_name"
+        else
+            "Exiting."
+            exit
         fi
+    else
+        git checkout $rqn_branch
     fi
+else
+    git checkout $rqn_branch
 fi
 cd ..
 
