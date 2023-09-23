@@ -160,6 +160,7 @@ if ! git show-ref --heads --quiet "$rqn_branch"; then # check local branches
         read -p "Branch $rqn_branch does not exist. Do you want to create it? [y/n] " answer
         if [[ $answer == [Yy]* ]]; then
             git checkout -b "$rqn_branch"
+            git push -u origin "$rqn_branch"
         else
             "Exiting."
             exit
