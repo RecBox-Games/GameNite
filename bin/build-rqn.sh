@@ -146,6 +146,7 @@ git_clone_and_checkout SystemApps
 
 
 ## configure rqn branch ##
+echo -e "\033[0;36mconfiguring rqn\033[0m"
 if [[ ! -d "rqn" ]]; then
     echo "rqn does not yet exist"
     git clone git@github.com:RecBox-Games/rqn.git
@@ -175,8 +176,6 @@ else
     git checkout $rqn_branch
 fi
 cd ..
-
-git_clone_and_checkout rqn $1
 
 
 ## add commit hashes to rqn/.commits ##
