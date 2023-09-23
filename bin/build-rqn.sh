@@ -116,7 +116,6 @@ fi
 
 
 ## get the repos ##
-git_clone_and_checkout rqn $1
 git_clone_and_checkout rqn-scripts
 git_clone_and_checkout ServerAccess
 git_clone_and_checkout ControlpadServer
@@ -129,6 +128,9 @@ git_clone_and_checkout SystemApps
 
 
 ## check that the specified branch exists
+if [[ ! -d rqn ]]; then
+    git clone git@github.com:RecBox-Games/rqn.git
+fi
 cd rqn
 if ! git show-ref --heads --quiet "$1"; then # check local branches
     if ! git ls-remote --quiet --heads origin "$branch_name"; then # check remote branches
@@ -139,6 +141,8 @@ if ! git show-ref --heads --quiet "$1"; then # check local branches
     fi
 fi
 cd ..
+
+git_clone_and_checkout rqn $1
 
 
 ## add commit hashes to rqn/.commits ##
