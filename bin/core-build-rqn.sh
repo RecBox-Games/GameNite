@@ -43,6 +43,7 @@ cd controller/controller_lib
 echo "compiling TypeScript controller code to JavaScript..."
 tsc
 echo "successfully compiled TypeScript controller code to JavaScript..."
+cd ../../
 mkdir -p $dest/controller # remove this line if it's not necessary 
 cp -r controller/controller $dest/
 cp target/release/loader $dest/
