@@ -44,6 +44,9 @@ fi
 # node
 install nodejs
 
+# tsc
+install node-typescript
+
 # SystemApps dependencies
 install librust-alsa-sys-dev
 install librust-libudev-sys-dev
