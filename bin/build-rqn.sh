@@ -168,7 +168,7 @@ echo ""
 
 
 ## committing ##
-files=$(git status --porcelain | awk '{if ($1 == "M" || $1 == "??" || $1 == "A") print $2}')
+files=$(git status --porcelain | awk '{if ($1 == "M" || $1 == "D" || $1 == "??" || $1 == "A") print $2}')
 # Loop through files and ask user
 for file in $files; do
     read -p "Do you want to add $file? [y/n] " answer
