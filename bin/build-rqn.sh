@@ -4,8 +4,8 @@ set -e
 
 BIN_DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 base="$(cd $BIN_DIR/.. && pwd)"
-
 cd $base
+
 
 ## check that we're building from the right machine ##
 if [[ ! $2 == "--force-os" ]]; then
@@ -14,6 +14,31 @@ if [[ ! $2 == "--force-os" ]]; then
 	exit 0
     fi
 fi
+
+
+## check that there is a correct branch specified ##
+if [[ -z "$1" ]]; then
+    echo "You have not specified a branch."
+    echo "Specify a branch, probably your personal branch or development."
+    echo "Exiting."
+    exit
+fi
+if [[ "$1" == "testing" || "$1" == "production" ]]; then
+    echo "This script cannot be used to affect testing or production."
+    echo "Build on a different branch, then use commit-to-testing.sh"
+    echo "Exiting."
+    exit
+fi
+if [[ "$1" == "development" ]]; then
+    echo -n "You've specified the development branch. Committing broken code to "
+    echo "this branch will cause problem for others."
+    read -p "Continue? [y/n] " answer
+    if [[ $answer != [Yy] ]]; then
+        echo "Exiting."
+        exit
+    fi
+fi
+
 
 ## helper functions ##
 repo_commit_string() {
@@ -75,11 +100,13 @@ set_new_version() {
     cd ..
 }
 
+
 ## make sure no outstanding changes in GameNite ##
 if [[ -n "$(git status | grep modified)" ]]; then
     echo "There are outstanding changes in GameNite repo. Exiting."
     exit
 fi
+
 
 ## get the repos ##
 git_clone_and_checkout GameNite
@@ -93,28 +120,8 @@ git_clone_and_checkout SystemApps
 # msg eg: "this repo is on branch ... . checkout main?
 # also checking for outstanding changes
 
-## check that there is a correct branch specified ##
-if [[ -z "$1" ]]; then
-    echo "You have not specified a branch."
-    echo "Specify a branch, probably your personal branch or development."
-    echo "Exiting."
-    exit
-fi
-if [[ "$1" == "testing" || "$1" == "production" ]]; then
-    echo "This script cannot be used to affect testing or production."
-    echo "Build on a different branch, then use commit-to-testing.sh"
-    echo "Exiting."
-    exit
-fi
-if [[ "$1" == "development" ]]; then
-    echo -n "You've specified the development branch. Committing broken code to "
-    echo "this branch will cause problem for others."
-    read -p "Continue? [y/n] " answer
-    if [[ $answer != [Yy] ]]; then
-        echo "Exiting."
-        exit
-    fi
-fi
+
+## check that the specified branch exists
 cd rqn
 if ! git show-ref --heads --quiet "$1"; then # check local branches
     if ! git ls-remote --quiet --heads origin "$branch_name"; then # check remote branches
@@ -132,6 +139,7 @@ if [[ $2 == "--force-os" ]]; then
     touch rqn/BUILT-FROM-THE-WRONG-OS
 fi
 
+
 ## add commit hashes to rqn/.commits ##
 echo "$(repo_commit_string GameNite)" > rqn/.commits
 echo "$(repo_commit_string rqn-scripts)" >> rqn/.commits
@@ -140,11 +148,14 @@ echo "$(repo_commit_string ControlpadServer)" >> rqn/.commits
 echo "$(repo_commit_string WebCP)" >> rqn/.commits
 echo "$(repo_commit_string SystemApps)" >> rqn/.commits
 
+
 ## build rqn ##
 $BIN_DIR/core-build-rqn.sh
 
+
 ## increment the d number for version ##
 set_new_version
+
 
 ## build end message ##
 cd rqn
@@ -154,6 +165,7 @@ echo "You have finished building rqn version $(cat version):"
 git -c color.status=always status | grep ":\|\[m" | sed 's/\(.*\)/| \1/'
 echo "-----------------------------"
 echo ""
+
 
 ## committing ##
 files=$(git status --porcelain | awk '{if ($1 == "M" || $1 == "??" || $1 == "A") print $2}')
