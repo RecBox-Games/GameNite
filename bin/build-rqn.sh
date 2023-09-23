@@ -176,7 +176,7 @@ echo ""
 
 
 ## committing ##
-files=$(git status --porcelain | awk '{if ($1 == "M" || $1 == "D" || $1 == "??" || $1 == "A") print $2}')
+files=$(git status --porcelain | grep ".[MAD?]" | sed 's/^...//')
 # Loop through files and ask user
 asnwer=""
 for file in $files; do
