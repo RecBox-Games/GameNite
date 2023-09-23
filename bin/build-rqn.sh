@@ -66,7 +66,7 @@ git_clone_and_checkout() {
     cd $repo_path
     repo_name=$(basename $(git rev-parse --show-toplevel))
     branch_name=$(git rev-parse --abbrev-ref HEAD)
-    echo -e "\033[0;34m--- $repo_name($branch_name) ---\033[0m"
+    echo -e "\033[0;36mchecking $repo_name($branch_name)\033[0m"
     if [[ -n "$(git status --porcelain)" ]]; then
         echo "There are outstanding changes in $repo_name repo. Fix that then try again."
         echo "Exiting."
@@ -121,7 +121,7 @@ set_new_version() {
 
 ## start message ##
 this_branch=$(git rev-parse --abbrev-ref HEAD)
-echo "You are building the $rqn_branch branch of rqn from the $this_branch branch of GameNite"
+echo -e "\033[0;34mYou are building the $rqn_branch branch of rqn from the $this_branch branch of GameNite\033[0m"
 
 
 ## get the repos ##
@@ -157,9 +157,11 @@ if ! git show-ref --heads --quiet "$rqn_branch"; then # check local branches
             exit
         fi
     else
+        echo a
         git checkout $rqn_branch
     fi
 else
+    echo b
     git checkout $rqn_branch
 fi
 cd ..
