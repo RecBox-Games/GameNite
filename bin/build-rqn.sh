@@ -14,13 +14,14 @@ if [[ -z "$1" ]]; then
     echo "Exiting."
     exit
 fi
-if [[ "$1" == "testing" || "$1" == "production" ]]; then
+rqn_branch="$1"
+if [[ "$rqn_branch" == "testing" || "$rqn_branch" == "production" ]]; then
     echo "This script cannot be used to affect testing or production."
     echo "Build for a different branch, then use commit-to-testing.sh"
     echo "Exiting."
     exit
 fi
-if [[ "$1" == "development" ]]; then
+if [[ "$rqn_branch" == "development" ]]; then
     echo -n "You've specified the development branch. Committing broken code to "
     echo "this branch will cause problems for others."
     read -p "Continue? [y/n] " answer
@@ -29,7 +30,6 @@ if [[ "$1" == "development" ]]; then
         exit
     fi
 fi
-
 
 ## check that we're building from the right machine ##
 if [[ ! $2 == "--force-os" ]]; then
@@ -57,24 +57,42 @@ repo_commit_string() {
 
 git_clone_and_checkout() {
     set -e
-    repo_name=$1
-    branch=${2-main}
     start_dir=$(pwd)
-    if [[ "$repo_name" != "GameNite" ]]; then
-        if [[ -d "$repo_name" ]]; then
-            echo "$repo_name exists"
+    repo_path=$1
+    if [[ -d "$repo_path" ]]; then
+        echo "$repo_name exists"
+    else
+        git clone git@github.com:RecBox-Games/$repo_path.git
+    fi
+    cd $repo_path
+    repo_name=$(basename $(git rev-parse --show-toplevel))
+    branch_name=$(git rev-parse --abbrev-ref HEAD)
+    if [[ -n "$(git status --porcelain)" ]]; then
+        echo "There are outstanding changes in $repo_name repo. Fix that then try again."
+        echo "Exiting."
+        exit
+    fi
+    git fetch
+    if [[ "$(git rev-parse HEAD)" != "$(git rev-parse @{u})" ]]; then
+        echo "The $branch_name branch of $repo_name does not match origin."
+        echo "push / pull then try again."
+        echo "Exiting."
+        exit
+    fi
+    if [[ "$branch_name" != "main" ]]; then
+        echo "$repo_name is not on main (it's on $branch_name)."
+        if [[ "$rqn_branch" == "development" ]]; then
+	    echo "You are building for rqn:development so checking out main."
+            git checkout main
         else
-            git clone git@github.com:RecBox-Games/$repo_name.git
+            echo -n "You are not building for rqn:development so up to you. "
+            read -p "Checkout main? [y/n] " answer
+            if [[ $answer == [Yy]* ]]; then
+                git checkout main
+            fi
         fi
-        cd "$repo_name"
     fi
     git config pull.rebase false
-    git fetch
-    actual_branch=$(git rev-parse --abbrev-ref HEAD)
-    if [[ "$actual_branch" != "$branch" ]]; then
-	echo "$repo_name was not on $branch. Checking out $branch"
-        git checkout $branch
-    fi
     git pull
     cd "$start_dir"
 }
@@ -115,8 +133,12 @@ if [[ "$(git rev-parse HEAD)" != "$(git rev-parse @{u})" ]]; then
 fi
 
 
+## start message ##
+this_branch=$(git rev-parse --abbrev-ref HEAD)
+echo "You are building the $rqn_branch branch of rqn from the $this_branch branch of GameNite"
+
 ## get the repos ##
-git_clone_and_checkout rqn $1
+git_clone_and_checkout rqn $rqn_branch
 git_clone_and_checkout rqn-scripts
 git_clone_and_checkout ServerAccess
 git_clone_and_checkout ControlpadServer
@@ -130,9 +152,9 @@ git_clone_and_checkout SystemApps
 
 ## check that the specified branch exists
 cd rqn
-if ! git show-ref --heads --quiet "$1"; then # check local branches
+if ! git show-ref --heads --quiet "$rqn_branch"; then # check local branches
     if ! git ls-remote --quiet --heads origin "$branch_name"; then # check remote branches
-        read -p "Branch $1 does not exist. Do you want to create it? [y/n] " answer
+        read -p "Branch $rqn_branch does not exist. Do you want to create it? [y/n] " answer
         if [[ $answer == [Yy]* ]]; then
             git checkout -b "$branch_name"
         fi
