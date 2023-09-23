@@ -51,7 +51,9 @@ echo "$new_test_v" > version
 cat version
 git add version
 git status
-git commit -m "release:testing:$new_test_v"
+echo "commit header: \"release:testing:$(cat version)\""
+read -p "Type a helper message for the commit (or just hit ENTER): " answer
+git commit -m "release:testing:$new_test_v | $answer"
 git push
 
 # end message

@@ -201,5 +201,5 @@ if [[ "$answer" != "y" ]]; then
 fi
 echo "commit header: \"release:development:$(cat version)\""
 read -p "Type a helper message for the commit (or just hit ENTER): " answer
-git commit -m "release:development:$(cat version)"
+git commit -m "release:development:$(cat version) | $answer"
 git push
