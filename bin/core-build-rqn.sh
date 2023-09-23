@@ -39,6 +39,9 @@ cd ..
 echo "----- SystemApps -----"
 cd SystemApps
 cargo build --release
+echo "compiling TypeScript controller code to JavaScript..."
+tsc
+echo "successfully compiled TypeScript controller code to JavaScript..."
 mkdir -p $dest/controller # remove this line if it's not necessary 
 cp -r controller/controller $dest/
 cp target/release/loader $dest/
