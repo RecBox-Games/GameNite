@@ -153,7 +153,8 @@ fi
 cd rqn
 git fetch
 # clear any local bullshit
-git reset --hard HEAD
+echo "reseting rqn"
+git reset --hard HEAD >/dev/null
 # check that the specified branch exists
 if ! git show-ref --heads --quiet "$rqn_branch"; then # check local branches
     if [[ -z $(git ls-remote --heads origin "$branch_name") ]]; then # check remote branches
