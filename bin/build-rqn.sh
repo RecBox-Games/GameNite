@@ -175,6 +175,7 @@ else
     echo b
     git checkout $rqn_branch
 fi
+git config pull.rebase false
 git pull
 cd ..
 
