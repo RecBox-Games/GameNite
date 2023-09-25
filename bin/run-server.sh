@@ -18,6 +18,10 @@ kill_process_by_name "target/.*/server"
 kill_process_by_name "cp_server"
 kill_process_by_name "index.js"
 
+if [[ "$1" == "-x" ]]; then
+    exit 0
+fi
+
 cd ControlpadServer
 cargo run &
 cd ../WebCP
