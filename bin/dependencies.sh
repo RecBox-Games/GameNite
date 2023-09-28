@@ -16,14 +16,14 @@ fi
 # helpful function to install without wasting time if already installed
 install() {
     if ! dpkg -l $1 2>/dev/null | grep . -q; then
-	if ! apt-cache search $1 | grep . -q; then
-	    echo "!!! $1 package not found !!!"	>&2
-	else
-	    echo ">>> Installing $1 <<<"
-	    sudo apt install -y $1
-	fi
+	    if ! apt-cache search $1 | grep . -q; then
+	        echo "!!! $1 package not found !!!"	>&2
+	    else
+	        echo ">>> Installing $1 <<<"
+	        sudo apt install -y $1
+	    fi
     else
-	echo "||| $1 is installed |||"
+	    echo "||| $1 is installed |||"
     fi
 }
 

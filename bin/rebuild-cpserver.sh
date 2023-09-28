@@ -22,7 +22,7 @@ function git_clone_and_checkout() {
 
     local actual_branch=$(git rev-parse --abbrev-ref HEAD)
     if [[ "$actual_branch" != "$branch" ]]; then
-	echo "$repo_name was not on $branch. Checking out $branch"
+	    echo "$repo_name was not on $branch. Checking out $branch"
         git checkout $branch
     fi
 

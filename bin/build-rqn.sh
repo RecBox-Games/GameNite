@@ -34,8 +34,8 @@ fi
 ## check that we're building from the right machine ##
 if [[ ! $2 == "--force-os" ]]; then
     if [[ ! "$($BIN_DIR/os-name.sh)" =~ "Debian GNU/Linux 11 (bullseye)" ]]; then
-	echo "Must run this script on a build machine"
-	exit 0
+        echo "Must run this script on a build machine"
+        exit 0
     fi
 fi
 
@@ -82,7 +82,7 @@ git_clone_and_checkout() {
     if [[ "$branch_name" != "main" ]]; then
         echo "$repo_name is not on main (it's on $branch_name)."
         if [[ "$rqn_branch" == "development" ]]; then
-	    echo "You are building for rqn:development so checking out main."
+            echo "You are building for rqn:development so checking out main."
             git checkout main
         else
             echo -n "You are not building for rqn:development so up to you. "

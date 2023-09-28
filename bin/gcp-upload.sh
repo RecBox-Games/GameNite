@@ -8,8 +8,8 @@ fi
 chillin="true"
 function check_for {
     if [[  -z "$(ls $1 2>/dev/null)" ]]; then
-	echo "didn't find $1 file"
-	chillin="false"
+	    echo "didn't find $1 file"
+	    chillin="false"
     fi
 }
 
