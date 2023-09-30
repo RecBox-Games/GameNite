@@ -37,6 +37,7 @@ echo "uploading files"
 gsutil cp ./icon* gs://$1/$2/icon
 gsutil cp ./preview* gs://$1/$2/preview
 gsutil cp ./description.txt gs://$1/$2/description
+gsutil setmeta -h "Cache-Control:no-cache, max-age=10" gs://$1/$2/game
 gsutil cp ./game.tar.gz gs://$1/$2/game
 
 echo done
