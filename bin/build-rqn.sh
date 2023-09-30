@@ -168,11 +168,9 @@ if ! git show-ref --heads --quiet "$rqn_branch"; then # check local branches
             exit
         fi
     else
-        echo a
         git checkout $rqn_branch
     fi
 else
-    echo b
     git checkout $rqn_branch
 fi
 git config pull.rebase false
@@ -238,7 +236,8 @@ if [[ "$answer" != "y" ]]; then
     echo "Quitting. You should probably reset local rqn changes."
     exit
 fi
-echo "commit header: \"release:$branch_name:$(cat version)\""
+echo "commit header: \"release:$rqn_branch:$(cat version)\""
 read -p "Type a helper message for the commit (or just hit ENTER): " answer
-git commit -m "release:development:$(cat version) | $answer"
+git commit -m "release:$rqn_branch:$(cat version) | $answer"
 git push
+
