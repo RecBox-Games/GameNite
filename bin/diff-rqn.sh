@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 set -e
 
 BIN_DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -7,14 +8,51 @@ base="$(cd $BIN_DIR/.. && pwd)"
 cd $base
 
 
-# Check for exactly two arguments
-if [ "$#" -ne 2 ]; then
-    echo "Usage: $0 <hash1> <hash2>"
+# Check that there's at least 2 arguments
+if [ "$#" -lt 2 ]; then
+    echo "Usage: $0 <hash1> <hash2> [--stat|--name-only|--name-status]"
     exit 1
 fi
 
-hash1=$1
-hash2=$2
+echo -e "\033[0;33m(Make sure you've run \033[1;33mbin/pull.sh\033[0;33m before running this script)\033[0m"
+
+cd rqn
+git checkout testing &>/dev/null
+
+hash1="$1"
+if [[ ! "$(git cat-file -t $hash1 2>/dev/null)" == "commit" ]]; then
+    version_regex1=$(echo $1 | sed 's/\./\\\./g')
+    hash1=$(git log | grep "release:.*:$version_regex1 " -B 10 | grep '^commit ' | tail -1 | sed 's/^commit \(.\{8\}\).*/\1/')    
+    if [[ ! "$(git cat-file -t $hash1 2>/dev/null)" == "commit" ]]; then
+        echo -e "\033[0;31m'$1' was not found to be a proper version or hash\033[0m"
+        echo "Exiting"
+        exit
+    fi
+fi
+
+hash2="$2"
+if [[ ! "$(git cat-file -t $hash2 2>/dev/null)" == "commit" ]]; then
+    version_regex2=$(echo $2 | sed 's/\./\\\./g')
+    hash2=$(git log | grep "release:.*:$version_regex2 " -B 10 | grep '^commit ' | tail -1 | sed 's/^commit \(.\{8\}\).*/\1/')
+    if [[ ! "$(git cat-file -t $hash2 2>/dev/null)" == "commit" ]]; then
+        echo -e "\033[0;31m'$2' was not found to be a proper version or hash\033[0m"
+        echo "Exiting"
+        exit
+    fi
+fi
+
+
+header=$(git log -n 1 --pretty=format:"%h (%an - %ar)" $hash1)
+message=$(git log -n 1 --pretty=format:"%s" $hash1)
+echo -e "\033[0;34mdiffing $header\033[0m"
+echo "    $message"
+
+header=$(git log -n 1 --pretty=format:"%h (%an - %ar)" $hash2)
+message=$(git log -n 1 --pretty=format:"%s" $hash2)
+echo -e "\033[0;34mand $header\033[0m"
+echo "    $message"
+echo
+
 
 # Temporary files to store the .commits content
 tmp1=$(mktemp)
@@ -35,12 +73,20 @@ while IFS=' ' read -r repo branch commit1; do
         else
             cd $base/$repo
         fi
-        # copy files that differ from each
-        $BIN_DIR/helper/diff-source-repos.sh $commit1 $commit2 $base/diff/$hash1/$repo/ $base/diff/$hash2/$repo/
+        if [[ -n "$3" ]]; then
+            git diff $3 $commit1 $commit2 --
+        else
+            # copy files that differ from each
+            $BIN_DIR/helper/diff-source-repos.sh $commit1 $commit2 $base/diff/$hash1/$repo/ $base/diff/$hash2/$repo/
+        fi
     else
         echo "Warning: $repo exists in $hash1's .commits but not in $hash2's"
     fi
 done < "$tmp1"
+
+if [[ -n "$3" ]]; then
+    exit
+fi
 
 # Check for repos in hash2's .commits that don't exist in hash1's
 while IFS=' ' read -r repo branch commit2; do
