@@ -11,3 +11,6 @@
   between patches N and M
 
 * check for outstanding changes in source repos
+
+* diff-rqn.sh: search testing branch AND development branch for commit message
+  version names
