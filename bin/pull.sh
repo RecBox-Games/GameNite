@@ -17,6 +17,7 @@ pull_repo() {
 
 
 pull_repo ./
+pull_repo rqn
 pull_repo rqn-scripts
 pull_repo ControlpadServer
 pull_repo SystemApps
