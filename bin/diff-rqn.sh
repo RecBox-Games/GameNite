@@ -17,12 +17,17 @@ fi
 echo -e "\033[0;33m(Make sure you've run \033[1;33mbin/pull.sh\033[0;33m before running this script)\033[0m"
 
 cd rqn
-git checkout testing &>/dev/null
+git checkout testing >/dev/null
 
+set +e
 hash1="$1"
 if [[ ! "$(git cat-file -t $hash1 2>/dev/null)" == "commit" ]]; then
     version_regex1=$(echo $1 | sed 's/\./\\\./g')
-    hash1=$(git log | grep "release:.*:$version_regex1 " -B 10 | grep '^commit ' | tail -1 | sed 's/^commit \(.\{8\}\).*/\1/')    
+    log_line=$(git log --oneline testing | grep "release:.*:$version_regex1 ")
+    if [[ -z "$log_line" ]]; then
+        log_line=$(git log --oneline development | grep "release:.*:$version_regex1 ")
+    fi
+    hash1=$(echo $log_line | sed 's/ .*//')
     if [[ ! "$(git cat-file -t $hash1 2>/dev/null)" == "commit" ]]; then
         echo -e "\033[0;31m'$1' was not found to be a proper version or hash\033[0m"
         echo "Exiting"
@@ -33,13 +38,18 @@ fi
 hash2="$2"
 if [[ ! "$(git cat-file -t $hash2 2>/dev/null)" == "commit" ]]; then
     version_regex2=$(echo $2 | sed 's/\./\\\./g')
-    hash2=$(git log | grep "release:.*:$version_regex2 " -B 10 | grep '^commit ' | tail -1 | sed 's/^commit \(.\{8\}\).*/\1/')
+    log_line=$(git log --oneline testing | grep "release:.*:$version_regex2 ")
+    if [[ -z "$log_line" ]]; then
+        log_line=$(git log --oneline development | grep "release:.*:$version_regex2 ")
+    fi
+    hash2=$(echo $log_line | sed 's/ .*//')
     if [[ ! "$(git cat-file -t $hash2 2>/dev/null)" == "commit" ]]; then
         echo -e "\033[0;31m'$2' was not found to be a proper version or hash\033[0m"
         echo "Exiting"
         exit
     fi
 fi
+set -e
 
 
 header=$(git log -n 1 --pretty=format:"%h (%an - %ar)" $hash1)
