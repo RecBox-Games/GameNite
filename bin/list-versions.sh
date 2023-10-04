@@ -11,32 +11,45 @@ if [[ -z "$1" ]]; then
 fi
 
 cd rqn
-#git fetch
+
+if [[ "$2" != "--no-pull" ]]; then
+    git reset --hard HEAD >/dev/null
+    git checkout development >/dev/null
+    git pull >/dev/null
+    git checkout testing >/dev/null
+    git pull >/dev/null
+fi
 
 NUM_LINES=$1
 
 # Get the list of commit hashes for the testing branch
-COMMITS_TESTING=$(git rev-list -10 testing )
+COMMIT_HASHES_TESTING=$(git rev-list -10 testing )
 
-# Find the first matching commit between development and testing
+# find the first matching commit between development and testing
 MATCHING_COMMIT=""
-for commit in $(git rev-list -40 development); do
-    if echo "$COMMITS_TESTING" | grep -q "$commit"; then
-        MATCHING_COMMIT=$commit
+for commit_hash in $(git rev-list -40 development); do
+    if echo "$COMMIT_HASHES_TESTING" | grep -q "$commit_hash"; then
+        MATCHING_COMMIT=$commit_hash
         break
     fi
 done
 
 # Get the one line commits of the development branch up to the latest commit of testing
-DEVELOPMENT_COMMITS=$(git log -n 40 --oneline development $MATCHING_COMMIT..)
+git checkout development &>/dev/null
+DEVELOPMENT_COMMITS=$(git log -n 40 --oneline $MATCHING_COMMIT..)
+NUM_DEV_LINES=$(echo "$DEVELOPMENT_COMMITS" | wc -l)
 
-NUM_LINES_REMAINING=$((NUM_LINES - $(echo "$DEVELOPMENT_COMMITS" | wc -l)))
-
-# Get the one line commits of the testing branch
-TESTING_COMMITS=$(git log --oneline -n $NUM_LINES_REMAINING testing)
+if [[ $NUM_LINES -le $NUM_DEV_LINES ]]; then
+    COMMITS=$(echo "$DEVELOPMENT_COMMITS" | head -$NUM_LINES)
+else
+    NUM_LINES_REMAINING=$((NUM_LINES - NUM_DEV_LINES))
+    # Get the one line commits of the testing branch
+    git checkout testing &>/dev/null
+    TESTING_COMMITS=$(git log --oneline -n $NUM_LINES_REMAINING testing)
+    COMMITS=$(echo "$DEVELOPMENT_COMMITS"; echo -e "abc \033[0;34m----\033[0m" ; echo "$TESTING_COMMITS")
+fi
 
 # formatting
-COMMITS=$(echo "$DEVELOPMENT_COMMITS"; echo "$TESTING_COMMITS")
 COMMIT_LINES=$(echo "$COMMITS" | grep -o " .*")
 COLORED=$(echo "$COMMIT_LINES" | sed 's/\(release:[^:]*:\)\([^: ]*\)\( \|$\)/\1\\033[0;36m\2\\033[0m /')
 echo -e "$COLORED"
