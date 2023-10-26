@@ -33,4 +33,5 @@ controller_dir=$(pwd)
 cd $here
 echo "ln -sfn $controller_dir /home/requin/controller"
 ln -sfn $controller_dir /home/requin/controller
+qr_ip
 node index.js
