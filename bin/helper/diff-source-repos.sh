@@ -30,3 +30,6 @@ for file in $differing_files; do
     mkdir -p "$(dirname $dest2)"
     git show "${hash2}:${file}" > "$dest2"
 done
+
+pwd # This has to be here so that the script can't fail (by having the last
+    # command fail)
