@@ -8,7 +8,7 @@ fi
 
 game=$1
 dir=$2
-bucket=${3-gamenite-games-testing}
+bucket=${3-gamenite-games-development}
 
 chillin="true"
 function check_for {
