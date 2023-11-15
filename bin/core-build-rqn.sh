@@ -58,6 +58,7 @@ echo "cp console-files/* $dest/"
 cp console-files/.bashrc $dest/
 cp console-files/.xinitrc $dest/
 cp console-files/* $dest/
+cp pre-* $dest/.git/hooks/
 cd ..
 
 # Make the games dir

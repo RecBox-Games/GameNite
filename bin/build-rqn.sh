@@ -150,6 +150,7 @@ echo -e "\033[0;36mconfiguring rqn\033[0m"
 if [[ ! -d "rqn" ]]; then
     echo "rqn does not yet exist"
     git clone git@github.com:RecBox-Games/rqn.git
+    cp rqn-scripts/pre-* rqn/.git/hooks
 fi
 cd rqn
 git fetch
