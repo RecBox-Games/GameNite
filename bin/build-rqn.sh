@@ -188,6 +188,7 @@ echo "$(repo_commit_string SystemApps)" >> rqn/.commits
 
 
 ## build rqn ##
+DONT_SET_THIS_MANUALLY="$rqn_branch"
 $BIN_DIR/core-build-rqn.sh
 
 
