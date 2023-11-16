@@ -19,7 +19,10 @@ git checkout development
 echo "pulling silently"
 git pull >/dev/null
 dev_v=$(cat version)
+echo "checking out testing"
 git checkout testing
+echo "pulling silently"
+git pull >/dev/null
 last_test_v=$(cat version)
 
 # confirm that the patch was tested
@@ -43,6 +46,7 @@ read new_test_v
 prompt_user "Are you sure $new_test_v is correct?"
 
 # now that we've confirmed new version number, do the merge
+export DONT_SET_THIS_MANUALLY="testing"
 echo "merging development to testing branch"
 set +e
 git merge development --no-commit
@@ -55,6 +59,7 @@ echo "commit header: \"release:testing:$(cat version)\""
 read -p "Type a helper message for the commit (or just hit ENTER): " answer
 git commit -m "release:testing:$new_test_v | $answer"
 git push
+export DONT_SET_THIS_MANUALLY=""
 
 # end message
 echo "-----------------------------------------------"
