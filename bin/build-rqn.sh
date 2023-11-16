@@ -189,7 +189,7 @@ echo "$(repo_commit_string SystemApps)" >> rqn/.commits
 
 
 ## build rqn ##
-DONT_SET_THIS_MANUALLY="$rqn_branch"
+export DONT_SET_THIS_MANUALLY="$rqn_branch"
 $BIN_DIR/core-build-rqn.sh
 
 
@@ -243,3 +243,4 @@ read -p "Type a helper message for the commit (or just hit ENTER): " answer
 git commit -m "release:$rqn_branch:$(cat version) | $answer"
 git push
 
+export DONT_SET_THIS_MANUALLY=""
