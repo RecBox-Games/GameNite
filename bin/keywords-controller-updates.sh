@@ -3,7 +3,7 @@
 set -e
 
 base=/home/requin/domestic/GameNite/KeyWords
-dest=/home/requin/rqn/games/keywords/
+dest=/home/requin/games/keywords/
 
 echo "Bringing you to KeyWords/ts_controller..."
 cd "$base/ts_controller"
