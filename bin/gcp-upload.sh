@@ -41,7 +41,6 @@ cd ..
 echo "uploading files"
 gsutil mkdir gs://$bucket/$game
 gsutil cp ./icon.png gs://$bucket/$game/icon
-gsutil cp ./icon.png gs://$bucket/$game/icon.png
 gsutil cp ./preview.png gs://$bucket/$game/preview
 gsutil cp ./description.txt gs://$bucket/$game/description
 gsutil setmeta -h "Cache-Control:no-cache, max-age=10" gs://$bucket/$game/game

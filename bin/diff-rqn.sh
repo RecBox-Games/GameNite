@@ -7,6 +7,7 @@ BIN_DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 base="$(cd $BIN_DIR/.. && pwd)"
 cd $base
 
+$BIN_DIR/pull.sh
 
 # Check that there's at least 2 arguments
 if [ "$#" -lt 2 ]; then
