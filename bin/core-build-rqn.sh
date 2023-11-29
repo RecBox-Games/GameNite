@@ -60,7 +60,3 @@ cp console-files/.xinitrc $dest/
 cp console-files/* $dest/
 cp pre-* $dest/.git/hooks/
 cd ..
-
-# Make the games dir
-mkdir $dest/games
-touch $dest/games/.gitkeep
