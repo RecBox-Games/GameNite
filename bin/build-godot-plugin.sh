@@ -48,14 +48,15 @@ elif [[ $platform == "windows" ]]; then
     cp target/release/c_controlpads.lib ../godot-gamenite-controlpads/recbox-bin/
 fi
 cd ../godot-gamenite-controlpads/
-if [[ ! -d "./godot-cpp/bin" ]]; then
-    cd godot-cpp
-    git submodule update --init
-    check_for_godot
-    godot --dump-extension-api extension_api.json
-    scons platform=$platform -j4 custom_api_file=extension_api.json
-    cd ..
-fi
+
+# update godot-cpp
+cd godot-cpp
+git submodule update --init
+check_for_godot
+godot --dump-extension-api extension_api.json
+scons platform=$platform -j4 custom_api_file=extension_api.json
+cd ..
+
 # run scons but stop if we fail
 scons platform=$platform
 if [ $? -ne 0 ]; then
