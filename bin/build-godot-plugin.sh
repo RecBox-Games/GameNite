@@ -123,7 +123,7 @@ function build_godot_cpp() {
         git pull origin "$godot_version"
         check_for_godot
         godot --dump-extension-api extension_api.json
-        scons platform=$platform -j4 custom_api_file=gdextension/extension_api.json
+        scons platform=$platform -j4 custom_api_file=extension_api.json
         cd ..
     fi
 }
