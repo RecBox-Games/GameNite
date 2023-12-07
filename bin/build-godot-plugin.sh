@@ -1,10 +1,12 @@
 #!/bin/bash
 
-# Check the first argument
+# set global args
 platform=$1
+keep_branches=$2
 
 function check_platform() {
-    if [[ "$platform" != "linux" && "$platform" != "windows" && "$platform" != "all" ]]; then
+    if [[ "$platform" != "linux" && "$platform" != "windows" && "$platform" != "all" &&
+        "$platform" != "macos" ]]; then
         echo "Invalid or missing argument ($platform). Expected 'linux' or 'windows' or 'all'"
         echo "to compile for both platforms."
         exit 1
@@ -13,7 +15,8 @@ function check_platform() {
 
 # ensure required repos are pulled
 function clone_and_pull() {
-    local keep_branches=$2
+    echo "======================================================================================="
+    echo "$keep_branches"    
     local parent_dir=$(pwd)  # Store the current directory (folder A)
     local repos=("git@github.com:RecBox-Games/godot-gamenite-controlpads.git"
                  "git@github.com:RecBox-Games/c_controlpads.git"
@@ -76,6 +79,17 @@ function build_c_controlpads_windows() {
     cp target/x86_64-pc-windows-gnu/release/wc_controlpads.lib ../godot-gamenite-controlpads/recbox-bin/
 }
 
+# build c_controlpads in windows and copy to godot-gameniote-controlpads
+function build_c_controlpads_macos(){
+    if [[ -d "target/x86_64-apple-darwin" ]]; then
+       rm -rf "target/x86_64-apple-darwin"
+    fi
+    rustup target add x86_64-apple-darwin
+    cargo build --target x86_64-apple-darwin --release
+    mv target/x86_64-apple-darwin/release/libc_controlpads.a target/x86_64-apple-darwin/release/libmc_controlpads.a
+    cp target/x86_64-apple-darwin/release/libmc_controlpads.a ../godot-gamenite-controlpads/recbox-bin/
+}
+
 # entry to build c_controlpads libs
 function build_c_controlpads() {
     cd c_controlpads
@@ -93,6 +107,12 @@ function build_c_controlpads() {
         echo "jk will update the script to read or ask for the current OS you're running at some point"
         echo "======================================================================================="        
         build_c_controlpads_windows
+    elif [[ $platform == "macos" ]]; then
+        echo "======================================================================================="
+        echo "Cross compiling for windows. If you are on windows machine...be better"
+        echo "jk will update the script to read or ask for the current OS you're running at some point"
+        echo "======================================================================================="        
+        build_c_controlpads_macos
     fi
     rustup default stable
 }
@@ -142,8 +162,6 @@ function build_godot_gamenite_controlpads() {
     fi
     scons platform=$platform target=template_release
 }
-
-#function build_c_controlpads_mac(){}
 
 function test_plugin() {
     ## Testing ##
