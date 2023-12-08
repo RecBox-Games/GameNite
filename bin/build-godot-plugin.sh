@@ -100,17 +100,16 @@ function build_c_controlpads() {
         echo "building c_controlpads library for linux"
         echo "======================================================================================="        
         build_c_controlpads_linux
-
     elif [[ $platform == "windows" ]]; then
         echo "======================================================================================="
-        echo "Cross compiling for windows. If you are on windows machine...be better"
-        echo "jk will update the script to read or ask for the current OS you're running at some point"
+        echo "Cross compiling for windows. If you are on windows machine...this portion of the script won't work"
+        echo "will update to account for operating system that the script is being run from at some point"
         echo "======================================================================================="        
         build_c_controlpads_windows
     elif [[ $platform == "macos" ]]; then
         echo "======================================================================================="
-        echo "Cross compiling for windows. If you are on windows machine...be better"
-        echo "jk will update the script to read or ask for the current OS you're running at some point"
+        echo "Cross compiling for mac. If you are on a mac machine...this portion of the script won't work"
+        echo "will update to account for operating system that the script is being run from at some point"        
         echo "======================================================================================="        
         build_c_controlpads_macos
     fi
