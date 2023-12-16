@@ -160,6 +160,7 @@ function build_godot_gamenite_controlpads() {
         exit 2
     fi
     scons platform=$platform target=template_release
+    cp -r demo/bin/* addons/gamenite-controlpads/bin/
 }
 
 function test_plugin() {
