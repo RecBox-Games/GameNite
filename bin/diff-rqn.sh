@@ -7,13 +7,13 @@ BIN_DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 base="$(cd $BIN_DIR/.. && pwd)"
 cd $base
 
-$BIN_DIR/pull.sh
-
 # Check that there's at least 2 arguments
 if [ "$#" -lt 2 ]; then
     echo "Usage: $0 <hash1> <hash2> [--stat|--name-only|--name-status]"
     exit 1
 fi
+
+$BIN_DIR/pull.sh
 
 echo -e "\033[0;33m(Make sure you've run \033[1;33mbin/pull.sh\033[0;33m before running this script)\033[0m"
 
