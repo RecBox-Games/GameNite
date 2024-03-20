@@ -60,7 +60,10 @@ if [ "$CURRENT_NODE_VERSION" -ne 18 ]; then
 fi
 
 # tsc
-install node-typescript
+#install node-typescript
+curl -fsSL https://deb.nodesource.com/setup_16.x | sudo bash -
+sudo npm install -g npm@latest
+sudo npm install -g typescript@5.2.2
 
 # SystemApps dependencies
 install librust-alsa-sys-dev
