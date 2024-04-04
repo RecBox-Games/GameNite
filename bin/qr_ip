@@ -1,0 +1,1 @@
+ip addr | grep 'inet ' | grep -vw lo | tail -1 | sed 's/.*inet \([^ \/]*\).*/http:\/\/\1:3000/' | qrencode -t utf8 -m 2
