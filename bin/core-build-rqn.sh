@@ -45,7 +45,7 @@ cargo build --release
 #echo "successfully compiled TypeScript controller code to JavaScript..."
 #cd ../../
 mkdir -p $dest/controller # remove this line if it's not necessary 
-cp -r controller/controller $dest/
+cp -r controller/ $dest/
 cp target/release/loader $dest/
 cp target/release/system $dest/
 cp -r resources $dest/
