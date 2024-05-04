@@ -39,6 +39,12 @@ if [[ ! $2 == "--force-os" ]]; then
     fi
 fi
 
+## determine what build flags to use for SystemApps ##
+flags=""
+if [[ "$rqn_branch" != "production" ]]; then
+    flags="--features func-trace"
+fi
+
 
 ## helper functions ##
 repo_commit_string() {
@@ -190,7 +196,7 @@ echo "$(repo_commit_string SystemApps)" >> rqn/.commits
 
 ## build rqn ##
 export DONT_SET_THIS_MANUALLY="$rqn_branch"
-$BIN_DIR/core-build-rqn.sh
+$BIN_DIR/core-build-rqn.sh "$flags"
 
 
 ## add a warning artifact if we built from the wrong OS ##

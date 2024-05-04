@@ -5,6 +5,7 @@ set -e
 BIN_DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 base="$(cd $BIN_DIR/.. && pwd)"
 dest="$base/rqn/"
+flags="$1"
 
 cd $dest
 if [[ -n "$(git remote -v | grep westonkelliher)" ]]; then
@@ -23,7 +24,7 @@ cd $base
 # Control Pad Server
 echo "----- ControlPadSever -----"
 cd ControlpadServer
-cargo build --release
+cargo build --release $flags
 cp target/release/server $dest/cp_server
 cd ..
 
@@ -38,7 +39,7 @@ cd ..
 # System Software (Loader and System)
 echo "----- SystemApps -----"
 cd SystemApps
-cargo build --release
+cargo build --release $flags
 cd controller/controller_lib
 echo "compiling TypeScript controller code to JavaScript..."
 tsc
