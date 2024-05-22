@@ -150,6 +150,8 @@ git_clone_and_checkout SystemApps
 # msg eg: "this repo is on branch ... . checkout main?
 # also checking for outstanding changes
 
+## disable the prehook thing preventing pushing ##
+export DONT_SET_THIS_MANUALLY="$rqn_branch"
 
 ## configure rqn branch ##
 echo -e "\033[0;36mconfiguring rqn\033[0m"
@@ -195,7 +197,6 @@ echo "$(repo_commit_string SystemApps)" >> rqn/.commits
 
 
 ## build rqn ##
-export DONT_SET_THIS_MANUALLY="$rqn_branch"
 $BIN_DIR/core-build-rqn.sh "$flags"
 
 
