@@ -20,13 +20,16 @@ function check_for {
 
 cd $dir
 
-# check for preview.png, icon.png, description.txt, game/, game/meta.txt, game/controller/
+# check for preview.png, icon.png, description.txt, meta.txt, game/, and game/controller/
 check_for "preview.png" 
 check_for "icon.png"
 check_for "description.txt"
 check_for "meta.txt"
 check_for "game"
 check_for "game/controller"
+
+# increment version number
+sed -i -E 's/^version=([0-9]+)/echo "version=$((\1+1))"/e' meta.txt
 
 if [[ "$chillin" == "false" ]]; then
     exit 1
