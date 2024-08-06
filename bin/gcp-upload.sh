@@ -24,8 +24,8 @@ cd $dir
 check_for "preview.png" 
 check_for "icon.png"
 check_for "description.txt"
+check_for "meta.txt"
 check_for "game"
-check_for "game/meta.txt"
 check_for "game/controller"
 
 if [[ "$chillin" == "false" ]]; then
@@ -43,6 +43,7 @@ gsutil mkdir gs://$bucket/$game
 gsutil cp ./icon.png gs://$bucket/$game/icon
 gsutil cp ./preview.png gs://$bucket/$game/preview
 gsutil cp ./description.txt gs://$bucket/$game/description
+gsutil cp ./meta.txt gs://$bucket/$game/meta
 gsutil setmeta -h "Cache-Control:no-cache, max-age=10" gs://$bucket/$game/game
 gsutil cp ./game.tar.gz gs://$bucket/$game/game
 
