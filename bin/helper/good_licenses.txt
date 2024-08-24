@@ -1,0 +1,12 @@
+(Apache-2.0 OR MIT) AND BSD-3-Clause ([0-9]*):
+(MIT OR Apache-2.0) AND Unicode-DFS-2016 ([0-9]*):
+0BSD OR Apache-2.0 OR MIT ([0-9]*):
+Apache-2.0 ([0-9]*):
+Apache-2.0 OR.*([0-9]*):
+BSD-2-Clause ([0-9]*):
+BSD-3-Clause ([0-9]*):
+CC0-1.0 ([0-9]*):
+ISC ([0-9]*):
+MIT ([0-9]*):
+MIT OR Unlicense ([0-9]*):
+Zlib ([0-9]*):
