@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License along with
 # GameNite. If not, see <https://www.gnu.org/licenses/>.
 
-
+# set global args
 platform=$1
 keep_branches=$2
 

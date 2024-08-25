@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License along with
 # GameNite. If not, see <https://www.gnu.org/licenses/>.
 
-
+# Ensure four arguments are provided
 if [ "$#" -ne 3 ]; then
     echo "Usage: $0 [--stat|--name-only|--name-status] <hash1> <hash2>"
     exit 1

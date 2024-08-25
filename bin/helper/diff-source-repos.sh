@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License along with
 # GameNite. If not, see <https://www.gnu.org/licenses/>.
 
-
+# Ensure four arguments are provided
 if [ "$#" -ne 4 ]; then
     echo "Usage: $0 <hash1> <hash2> <output_dir1> <output_dir2>"
     exit 1
